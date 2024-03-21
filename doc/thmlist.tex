@@ -1,0 +1,100 @@
+\documentclass[11pt,svgnames]{article}
+\usepackage{geometry,titlesec,authblk,datetime,xcolor,hologo}
+\titleformat*{\section}{\bfseries\large}
+\hologoFontSetup{general=\sffamily}
+\usepackage[libertine,mono=false]{libertine}
+\usepackage[colorlinks,urlcolor=Indigo]{hyperref}
+
+\title{\bfseries The \texttt{thmlist} Package}
+\author{Hsia Mingyu, \href{https://www.hdu.edu.cn}{Hangzhou Dianzi University}}
+\yyyymmdddate\date{\today}
+\affil{\href{mailto:xiamyphys@gmail.com}{\ttfamily xiamyphys@gmail.com}}
+\date{\today\quad Version 0.1a\thanks{\url{https://github.com/xiamyphys/thmlist}}}
+
+\usepackage[amscounter=section,amsstyle=definition,
+            mdfcounter=section,mdfstyle=mdflist]{thmlist}
+\mdfdefinestyle{mdflist}{%
+    skipabove=0pt,          skipbelow=0pt,
+    hidealllines=true,      leftline=true,
+    linewidth=.5ex,         innerleftmargin=1.5ex,
+    innerrightmargin=0pt,   innertopmargin=-1.5ex,
+    innerbottommargin=.5ex}
+\amslist{remark,  example;             DarkRed,    Teal}
+\mdflist{theorem, lemma,   definition; DarkGreen, MidnightBlue, MidnightBlue}
+
+\begin{document}
+
+\maketitle\vspace*{-4ex}
+
+\begin{abstract}
+This is the document for the \verb+thmlist+ package, which provides a simple way for adding theorem environments quickly.
+\end{abstract}
+
+\section{The purpose of this package}
+This package provides a simple way for adding theorem environments quickly. Welcome to feedback bugs or ideas via email \href{mailto:xiamyphys@gmail.com}{\ttfamily xiamyphys@gmail.com} or \href{https://github.com/xiamyphys/thmlist}{GitHub}.
+
+This package has required the \verb+amsthm+ and \verb+mdframed+ packages to create different style of theorem environments, \verb+pgffor+ to support \verb|\foreach| loop and \verb+listofitems+ to support list reading.
+
+\section{Loading \texttt{thmlist}}
+I strongly advise you to use terminal/cmd to implement the commands to update all the packages (and install this package) to the latest version or switch to portable version instead
+\begin{verbatim}
+    sudo tlmgr update --self --all
+\end{verbatim}
+
+\section{Key values of this package}
+\begin{verbatim}
+    \usepackage[amscounter=<counter>,amsstyle=<style>,
+                mdfcounter=<counter>,mdfstyle=<style>]{thmlist}
+\end{verbatim}
+
+This package has four keys: \verb|amscounter|, \verb|amsstyle|, \verb|mdfcounter|, \verb|mdfstyle|.
+
+The \verb|amscounter| and the \verb|mdfcounter| keys can set the `numberwithin' of the theorem environments with(out) the frame style respectively, and the \verb|amsstyle| and the \verb|mdfstyle| keys can set the style of the theorem environments with(out) the frame style respectively.
+
+If you have not set the keys, the default values of the four keys will be applied
+\begin{verbatim}
+    amscounter=section,amsstyle=definition,mdfcounter=section,mdfstyle={}
+\end{verbatim}
+
+\section{Create theorem environments with(out) the framed style}
+
+\begin{itemize}
+    \item The \verb+mdflist+ command can create a series of theorem environments with the frame.
+    \item The \verb+amslist+ command can create a series of theorem environments without the frame.
+\end{itemize}
+\begin{verbatim}
+    \amslist{remark,    example;      DarkRed,     Teal}
+    \mdflist{theorem,   lemma,        definition;
+             DarkGreen, MidnightBlue, MidnightBlue}
+\end{verbatim}
+
+The first line in the list is the name of the environments and the second line in the list is corresponding to color of the title and (or) frame of the environments. The following is the effect of the style configuration
+\begin{verbatim}
+    \mdfdefinestyle{mdflist}{%
+        skipabove=0pt,          skipbelow=0pt,
+        hidealllines=true,      leftline=true,
+        linewidth=.5ex,         innerleftmargin=1.5ex,
+        innerrightmargin=0pt,   innertopmargin=-1.5ex,
+        innerbottommargin=.5ex}
+    \def\theexample{\arabic{example}}   \let\theremark=\relax
+\end{verbatim}
+
+You should put the counter configuration of some environments after \verb|\begin{document}|, or them will not work. Such as
+\begin{verbatim}
+    \def\theexample{\arabic{example}}   \let\theremark=\relax
+\end{verbatim}
+
+\def\theexample{\arabic{example}}\let\theremark=\relax
+\begin{definition}[The Definition Environment]
+    
+\end{definition}
+\begin{lemma}[The Lemma Environment]
+    
+\end{lemma}
+\begin{theorem}[The Theorem Environment]
+    
+\end{theorem}
+\example{This is an example.}
+\remark{This package works fine with the \verb+Standard Document Classes+.}
+
+\end{document}

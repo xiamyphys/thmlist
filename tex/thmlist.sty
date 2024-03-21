@@ -1,0 +1,67 @@
+%% ****************************************************************************************************
+%%   Copyright 2024 by Mingyu Hsia <xiamyphys@gmail.com>                                              *
+%%                                                                                                    *
+%%   This work may be distributed and/or modified under          *           *****       *    *       *
+%%   the conditions of the LaTeX Project Public License          *      ** *   *    ***   *  *        *
+%%                                                               *     *  **   *   *   *   **         *
+%%       http://www.latex-project.org/lppl.txt                   *     *   *   *   *****   **         *
+%%                                                               *     *  **   *   *      *  *        *
+%%   either version 1.3c of this license or any later            *****  ** *   *    ***  *    *       *
+%%   version.                                                                                         *
+%%                                                                                                    *
+%%   This work has the LPPL maintenance status `maintained'.                                          *
+%%                                                                                                    *
+%%   The Current Maintainer of this work is Mingyu Hsia.                                              *
+%%                                                                                                    *
+%%   This work consists of the files thmlist.sty,                                                     *
+%%                               and README.md.                                                       *
+%%   available at https://github.com/xiamyphys/thmlist                                                *
+%% ****************************************************************************************************
+\NeedsTeXFormat{LaTeX2e}[2020/10/01]
+\ProvidesPackage{thmlist}[2024/03/21/ v0.1a Package for creating amsthm environments quickly.]
+
+\DeclareOptionX{amscounter}{\def\@amscounter{#1}}
+\ExecuteOptionsX{amscounter=section}
+\DeclareOptionX{amsstyle}{\def\@amsstyle{#1}}
+\ExecuteOptionsX{amsstyle=definition}
+
+\DeclareOptionX{mdfcounter}{\def\@mdfcounter{#1}}
+\ExecuteOptionsX{mdfcounter=section}
+\DeclareOptionX{mdfstyle}{\def\@mdfstyle{#1}}
+\ExecuteOptionsX{mdfstyle=mdempty}
+
+\DeclareOptionX*{\PackageWarning{thmlist}{`\CurrentOption' ignored}}
+\ProcessOptionsX\relax
+
+\RequirePackage{amsthm,mdframed,listofitems,pgffor}
+\def\th@definition{\thm@notefont{}\normalfont}
+\theoremstyle{\@amsstyle}\mdfdefinestyle{mdempty}{}
+
+\setsepchar{;/,}\ignoreemptyitems
+\def\mdflist#1{\gdef\@mdflist{#1}}\def\amslist#1{\gdef\@amslist{#1}}
+\AtBeginDocument{%`'
+  \ifcsname @mdflist\endcsname
+    \readlist*\mdflist{\@mdflist}
+      \ifnum \listlen\mdflist[1]<\listlen\mdflist[2]
+        \def\@mdfnum{\listlen\mdflist[1]}
+      \else
+        \def\@mdfnum{\listlen\mdflist[2]}
+      \fi
+      \foreach \x in {1,...,\@mdfnum}{%
+        \expandafter\xdef\csname\x\x\endcsname{\noexpand
+          \newmdtheoremenv[linecolor=\mdflist[2,\x],style=\@mdfstyle]{\mdflist[1,\x]}
+            {\noexpand\color{\mdflist[2,\x]}\noexpand\sffamily\expandafter\MakeUppercase\expanded{\mdflist[1,\x]}}[\@mdfcounter]}\csname\x\x\endcsname}
+  \fi
+  \ifcsname @amslist\endcsname
+    \readlist*\amslist{\@amslist}
+      \ifnum \listlen\amslist[1]<\listlen\amslist[2]
+        \def\@amsnum{\listlen\amslist[1]}
+      \else
+        \def\@amsnum{\listlen\amslist[2]}
+      \fi
+      \foreach \x in {1,...,\@amsnum}{%
+        \expandafter\xdef\csname\x\x\endcsname{\noexpand
+          \newtheorem{\amslist[1,\x]}
+            {\noexpand\color{\amslist[2,\x]}\noexpand\sffamily\expandafter\MakeUppercase\expanded{\amslist[1,\x]}}[\@amscounter]}\csname\x\x\endcsname}
+  \fi
+}
