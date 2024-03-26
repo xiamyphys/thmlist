@@ -18,17 +18,20 @@
 %%   available at https://github.com/xiamyphys/thmlist                                                *
 %% ****************************************************************************************************
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
-\ProvidesPackage{thmlist}[2024/03/21/ v0.1a Package for creating amsthm environments quickly.]
+\ProvidesPackage{thmlist}[2024/03/26/ v0.1b Package for creating amsthm environments quickly.]
 
-\DeclareOptionX{amscounter}{\def\@amscounter{#1}}
+\DeclareOptionX{amscounter}{\gdef\@amscounter{#1}}
+\DeclareOptionX{mdfcounter}{\gdef\@mdfcounter{#1}}
 \ExecuteOptionsX{amscounter=section}
-\DeclareOptionX{amsstyle}{\def\@amsstyle{#1}}
-\ExecuteOptionsX{amsstyle=definition}
-
-\DeclareOptionX{mdfcounter}{\def\@mdfcounter{#1}}
 \ExecuteOptionsX{mdfcounter=section}
-\DeclareOptionX{mdfstyle}{\def\@mdfstyle{#1}}
+
+\DeclareOptionX{amsstyle}{\gdef\@amsstyle{#1}}
+\DeclareOptionX{mdfstyle}{\gdef\@mdfstyle{#1}}
+\ExecuteOptionsX{amsstyle=definition}
 \ExecuteOptionsX{mdfstyle=mdempty}
+
+\DeclareOptionX{thmfont}{\gdef\@thmfont{#1}}
+\ExecuteOptionsX{thmfont=\sffamily}
 
 \DeclareOptionX*{\PackageWarning{thmlist}{`\CurrentOption' ignored}}
 \ProcessOptionsX\relax
@@ -38,30 +41,23 @@
 \theoremstyle{\@amsstyle}\mdfdefinestyle{mdempty}{}
 
 \setsepchar{;/,}\ignoreemptyitems
-\def\mdflist#1{\gdef\@mdflist{#1}}\def\amslist#1{\gdef\@amslist{#1}}
-\AtBeginDocument{%`'
+\def\mdflist#1{\gdef\@mdflist{#1}}
+\def\amslist#1{\gdef\@amslist{#1}}
+\AtBeginDocument{%
   \ifcsname @mdflist\endcsname
     \readlist*\mdflist{\@mdflist}
-      \ifnum \listlen\mdflist[1]<\listlen\mdflist[2]
-        \def\@mdfnum{\listlen\mdflist[1]}
-      \else
-        \def\@mdfnum{\listlen\mdflist[2]}
-      \fi
+      \def\@mdfnum{\listlen\mdflist[1]}
       \foreach \x in {1,...,\@mdfnum}{%
         \expandafter\xdef\csname\x\x\endcsname{\noexpand
-          \newmdtheoremenv[linecolor=\mdflist[2,\x],style=\@mdfstyle]{\mdflist[1,\x]}
-            {\noexpand\color{\mdflist[2,\x]}\noexpand\sffamily\expandafter\MakeUppercase\expanded{\mdflist[1,\x]}}[\@mdfcounter]}\csname\x\x\endcsname}
+          \newmdtheoremenv[linecolor=\mdflist[3,\x],style=\@mdfstyle]{\mdflist[1,\x]}
+            {\noexpand\color{\mdflist[3,\x]}\noexpand\@thmfont{\mdflist[2,\x]}}[\@mdfcounter]}\csname\x\x\endcsname}
   \fi
   \ifcsname @amslist\endcsname
     \readlist*\amslist{\@amslist}
-      \ifnum \listlen\amslist[1]<\listlen\amslist[2]
-        \def\@amsnum{\listlen\amslist[1]}
-      \else
-        \def\@amsnum{\listlen\amslist[2]}
-      \fi
+    \def\@amsnum{\listlen\amslist[1]}
       \foreach \x in {1,...,\@amsnum}{%
         \expandafter\xdef\csname\x\x\endcsname{\noexpand
           \newtheorem{\amslist[1,\x]}
-            {\noexpand\color{\amslist[2,\x]}\noexpand\sffamily\expandafter\MakeUppercase\expanded{\amslist[1,\x]}}[\@amscounter]}\csname\x\x\endcsname}
+            {\noexpand\color{\amslist[3,\x]}\noexpand\@thmfont{\amslist[2,\x]}}[\@amscounter]}\csname\x\x\endcsname}
   \fi
 }
